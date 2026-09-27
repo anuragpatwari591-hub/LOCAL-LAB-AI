@@ -1,0 +1,85 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dev dependencies
+        run: pip install ruff
+      - name: Ruff check
+        run: ruff check backend engine scripts
+
+  test-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install backend dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pytest pytest-asyncio
+
+      # Real GitHub-hosted runners have normal internet access, so this
+      # downloads the actual llama.cpp release binary - the real-inference
+      # integration test then genuinely exercises it (not mocked).
+      - name: Acquire real llama.cpp engine binary
+        run: python engine/acquire_engine.py
+        continue-on-error: true # network hiccups shouldn't fail the whole suite; the test just skips
+
+      - name: Run test suite
+        run: pytest -v
+
+      - name: Shell script syntax check
+        run: |
+          for f in *.sh; do bash -n "$f"; done
+
+  offline-check-smoke:
+    runs-on: ubuntu-latest
+    needs: test-linux
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Run prepare (acquire engine only, model download will fail without HF mirror access - that's expected and reported)
+        run: |
+          python -m venv runtime/venv
+          ./runtime/venv/bin/pip install -r requirements.txt
+          python engine/acquire_engine.py || true
+      - name: Run offline-check (reports honest pass/fail, does not require a full pass)
+        run: python scripts/offline_check_main.py || true
+
+  windows-script-syntax:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: PowerShell syntax check
+        shell: pwsh
+        run: |
+          Get-ChildItem -Filter *.ps1 | ForEach-Object {
+            Write-Host "Checking $($_.Name)"
+            $errors = $null
+            [System.Management.Automation.PSParser]::Tokenize((Get-Content $_.FullName -Raw), [ref]$errors) | Out-Null
+            if ($errors.Count -gt 0) {
+              Write-Error "Syntax errors in $($_.Name)"
+              exit 1
+            }
+          }
+      - name: Batch file existence check
+        shell: cmd
+        run: |
+          for %%f in (start.bat prepare.bat diagnose.bat offline-check.bat deploy-usb.bat) do (
+            if not exist %%f (echo Missing %%f & exit /b 1)
+          )
