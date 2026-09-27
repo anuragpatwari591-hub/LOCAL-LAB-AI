@@ -1,0 +1,31 @@
+[project]
+name = "local-lab-ai"
+version = "1.0.0"
+description = "Portable, offline, GPT-style AI assistant for B.Tech students (OS/DBMS/coding/SWE/exam/viva labs)."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+
+[project.optional-dependencies]
+dev = [
+    "pytest==8.3.4",
+    "pytest-asyncio==0.25.0",
+    "ruff==0.8.6",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["backend"]
+asyncio_mode = "auto"
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+ignore = ["E402"]  # sys.path.insert(...) before import is intentional in scripts/*_main.py
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"

@@ -1,0 +1,65 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+.devvenv/
+runtime/venv/
+runtime/python/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+coverage.xml
+
+# --- Node (frontend build tooling, if any) ---
+node_modules/
+frontend/dist/
+
+# --- Large binary/model assets (fetched by prepare, never committed) ---
+models/llm/*.gguf
+models/embeddings/**
+!models/embeddings/.gitkeep
+runtime/engine/**
+!runtime/engine/.gitkeep
+runtime/bin/**
+!runtime/bin/.gitkeep
+
+# --- Generated at prepare/runtime time ---
+manifest.json
+manifest.lock.json
+*.sha256
+data/memory/*.db
+data/memory/*.sqlite*
+data/uploads/**
+!data/uploads/.gitkeep
+data/projects/**
+!data/projects/.gitkeep
+logs/
+*.log
+
+# --- Packaging output ---
+release/
+package/
+*.zip
+*.tar.gz
+!examples/**/*.zip
+
+# --- OS / editor cruft ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+
+# --- Secrets (must never be committed) ---
+.env
+.env.*
+*.pem
+*.key
+secrets.json

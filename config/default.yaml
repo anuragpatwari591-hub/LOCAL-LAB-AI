@@ -1,0 +1,49 @@
+# LOCAL-LAB-AI default configuration.
+# Values here are safe, conservative defaults for low-end hardware
+# (reference target: Intel i3-1005G1, 2 cores / 4 threads, ~3.8 GB RAM).
+# `prepare` may write a generated config/local.yaml with hardware-tuned
+# overrides; local.yaml (git-ignored) always wins over this file.
+
+app:
+  name: "LOCAL-LAB-AI"
+  version: "1.0.0"
+
+server:
+  host: "127.0.0.1"     # loopback only - never expose publicly by default
+  port: 8000
+  open_browser: true
+  allow_remote: false    # must be explicitly set true (and host changed) to bind non-loopback
+
+llm:
+  model_file: "qwen2.5-1.5b-instruct-q4_k_m.gguf"
+  context_size: 2048
+  threads: 2
+  batch_size: 256
+  gpu_layers: 0          # CPU-only by default; prepare may raise this if a GPU is detected
+  kv_cache_type: "q8_0"  # quantized KV cache to save RAM on low-end hardware
+  max_tokens: 512
+  temperature: 0.4
+  engine_port: 8712      # internal llama-server port, loopback only
+
+ocr:
+  enabled: true
+  language: "en"
+  max_image_dim: 1600
+
+rag:
+  enabled: true
+  chunk_size: 800
+  chunk_overlap: 120
+  top_k: 5
+  embedding_dim: 256
+
+memory:
+  enabled: true
+  max_history_messages: 20
+
+security:
+  allow_code_execution: false
+  telemetry: false
+
+modes:
+  default: "general"

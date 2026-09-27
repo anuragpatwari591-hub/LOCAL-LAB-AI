@@ -1,0 +1,25 @@
+# LOCAL-LAB-AI backend dependencies.
+# Installed once by `prepare` (or manually in dev mode via `pip install -r requirements.txt`).
+# The packaged USB distribution bundles these inside runtime/python/ so `start`
+# needs no internet access and no host-installed pip packages.
+
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+httpx==0.28.1
+pyyaml==6.0.2
+psutil==6.1.1
+numpy==2.2.1
+python-multipart==0.0.20
+
+# Document parsing (RAG)
+pypdf==5.1.0
+python-docx==1.1.2
+
+# Image handling (OCR preprocessing)
+pillow==11.1.0
+
+# Local OCR - ships its own ONNX detection/recognition/classification
+# models inside the PyPI wheel itself, so no separate Hugging Face
+# download is required.
+rapidocr-onnxruntime==1.4.4
+onnxruntime==1.20.1
