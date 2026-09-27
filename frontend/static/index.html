@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LOCAL-LAB-AI</title>
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div id="app">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-name">LOCAL-LAB-AI</span>
+      <span class="brand-version" id="app-version">v1.0.0</span>
+    </div>
+
+    <button id="new-chat-btn" class="btn btn-primary btn-block">+ New chat</button>
+
+    <div class="field-group">
+      <label for="mode-select">Mode</label>
+      <select id="mode-select"></select>
+    </div>
+
+    <div class="field-group">
+      <label for="project-select">Project</label>
+      <select id="project-select">
+        <option value="">(none)</option>
+      </select>
+      <button id="new-project-btn" class="btn btn-small">+ Project</button>
+    </div>
+
+    <div class="field-group" id="marks-group" style="display:none;">
+      <label for="marks-select">Marks</label>
+      <select id="marks-select">
+        <option value="">-</option>
+        <option value="1">1 mark</option>
+        <option value="2">2 marks</option>
+        <option value="5">5 marks</option>
+        <option value="10">10 marks</option>
+      </select>
+    </div>
+
+    <div class="field-group">
+      <label class="checkbox-label">
+        <input type="checkbox" id="rag-toggle"> Use my documents (RAG)
+      </label>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">History</div>
+      <ul id="conversation-list" class="conversation-list"></ul>
+    </div>
+
+    <div class="sidebar-footer">
+      <a href="#" id="documents-link">Documents</a>
+      <a href="#" id="diagnostics-link">Diagnostics</a>
+      <a href="#" id="clear-memory-link">Clear memory</a>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div id="chat-view">
+      <div id="messages" class="messages"></div>
+
+      <div id="ocr-preview" class="ocr-preview" hidden>
+        <div class="ocr-preview-header">
+          <span>OCR extracted text (edit if needed before sending)</span>
+          <button id="ocr-dismiss" class="btn btn-small">x</button>
+        </div>
+        <textarea id="ocr-text" rows="4"></textarea>
+      </div>
+
+      <form id="composer" class="composer">
+        <input type="file" id="image-input" accept="image/png,image/jpeg,image/webp,image/bmp" hidden>
+        <input type="file" id="doc-input" accept=".pdf,.docx,.txt,.md,.c,.cpp,.h,.hpp,.java,.py,.sql,.js,.ts,.cs" hidden>
+        <button type="button" id="attach-image-btn" class="btn btn-icon" title="Upload image (OCR)">[img]</button>
+        <button type="button" id="attach-doc-btn" class="btn btn-icon" title="Upload document (RAG)">[doc]</button>
+        <textarea id="message-input" placeholder="Ask about OS labs, DBMS/Oracle, coding, debugging, SRS, viva..." rows="1"></textarea>
+        <button type="submit" id="send-btn" class="btn btn-primary">Send</button>
+      </form>
+    </div>
+
+    <div id="documents-view" class="panel-view" hidden>
+      <h2>Documents (local RAG)</h2>
+      <p class="muted">Uploaded PDFs, DOCX, TXT, Markdown, and source files are parsed, chunked, embedded, and stored entirely on this machine.</p>
+      <ul id="documents-list" class="documents-list"></ul>
+      <button id="back-from-documents" class="btn">Back to chat</button>
+    </div>
+
+    <div id="diagnostics-view" class="panel-view" hidden>
+      <h2>Diagnostics</h2>
+      <pre id="diagnostics-output"></pre>
+      <button id="back-from-diagnostics" class="btn">Back to chat</button>
+    </div>
+  </main>
+</div>
+
+<script src="/js/markdown.js"></script>
+<script src="/js/api.js"></script>
+<script src="/js/app.js"></script>
+</body>
+</html>
